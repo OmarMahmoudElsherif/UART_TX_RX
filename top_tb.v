@@ -42,8 +42,8 @@ UART_RX #(
 reg [16:0] Tb;
 initial begin
 
-// since rx_clk = 6.5 usec, so Tb must be >=16rx_clk = 104000 nsec
-Tb<= 104000;
+// since rx_clk = 6.5 usec, so Tb =1/tx_freq = 1/9600 =104167 nsec
+Tb<= 104167;
 
 rst<=0;
 #2
@@ -53,27 +53,29 @@ rx_data_in_tb <=1; //idle
 rx_data_in_tb <=0; // start
 #Tb
 
+//                    MSB      LSB
+//               {d7,6,5,4} {d3,2,1,0}
 /***********data bits  1001_1010  ****************/
-rx_data_in_tb <=1; 
+rx_data_in_tb <=0;   // LSB :d0
 #Tb
-rx_data_in_tb <=0; 
+rx_data_in_tb <=1;  // d1
 #Tb
-rx_data_in_tb <=0; 
+rx_data_in_tb <=0; //  d2
 #Tb
-rx_data_in_tb <=1; 
+rx_data_in_tb <=1; //  d3
 #Tb
 
-rx_data_in_tb <=1; 
+rx_data_in_tb <=1; //  d4
 #Tb
-rx_data_in_tb <=0; 
+rx_data_in_tb <=0; //  d5
 #Tb
-rx_data_in_tb <=1; 
+rx_data_in_tb <=0; //  d6
 #Tb
-rx_data_in_tb <=0; 
+rx_data_in_tb <=1; //  d7  MSB
 #Tb;
 
 // idle again
-rx_data_in_tb <=1; 
+rx_data_in_tb <=1;  // End Bit
 #Tb;
 
 $display("Tx data : 1001_1010");
